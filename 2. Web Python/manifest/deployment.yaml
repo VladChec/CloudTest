@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: your-app
+  template:
+    metadata:
+      labels:
+        app: your-app
+    spec:
+      containers:
+      - name: app-container
+        image: app:tag 
+        ports:
+        - containerPort: 8000
+        env:
+        - name: AUTHOR
+          value: "test"  
+        - name: UUID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+  namespace: namespace 
+spec:
+  selector:
+    app: app
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PodDisruptionBudget
+metadata:
+  name: app-pdb
+  namespace: namespace 
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: app

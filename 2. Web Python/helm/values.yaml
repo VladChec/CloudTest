@@ -1,0 +1,7 @@
+image:
+  repository: image
+  tag: latest  
+
+replicaCount: 3
+
+author: test
